@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.ArraySet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import apps.tracker.com.applicationtracker.R;
 import apps.tracker.com.applicationtracker.adapter.ApplicationListAdapter;
@@ -41,7 +38,7 @@ public class ApplicationsInformationFragment extends Fragment {
 
     protected int tabSelected;
     protected List<PackageInfo> listOfAllApps, listOfNonSystemApps;
-//    protected List<AppsInstalledModel> appsInstalledModel;
+    //    protected List<AppsInstalledModel> appsInstalledModel;
     protected List<ActivityManager.RunningAppProcessInfo> listOfRunningApps;
     protected List<UsageStats> usageStats;
     protected HashMap<String, AppsInstalledModel> modelMap;
@@ -85,18 +82,18 @@ public class ApplicationsInformationFragment extends Fragment {
                     listOfNonSystemApps.add(app);
                 }
             }
-            usageStats = getUsageStatistics(UsageStatsManager.INTERVAL_MONTHLY);
+            usageStats = getUsageStatistics(UsageStatsManager.INTERVAL_YEARLY);
             for (PackageInfo nonSystemApp : listOfNonSystemApps) {
                 String appName = nonSystemApp.packageName;
-                    for (int i = 0; i < usageStats.size(); i++) {
-                        String statsAppName = usageStats.get(i).getPackageName();
-                        if (statsAppName.equals(appName) && !modelMap.containsKey(appName)) {
-                            modelMap.put(appName,new AppsInstalledModel(nonSystemApp, usageStats.get(i).getLastTimeUsed(), usageStats.get(i).getFirstTimeStamp()));
-                        }
+                for (int i = 0; i < usageStats.size(); i++) {
+                    String statsAppName = usageStats.get(i).getPackageName();
+                    if (statsAppName.equals(appName) && !modelMap.containsKey(appName)) {
+                        modelMap.put(appName, new AppsInstalledModel(nonSystemApp, usageStats.get(i).getFirstTimeStamp(), usageStats.get(i).getLastTimeUsed()));
+                    }
                 }
             }
 
-            applicationListAdapter = new ApplicationListAdapter(getActivity(), new ArrayList<AppsInstalledModel>(modelMap.values()));
+            applicationListAdapter = new ApplicationListAdapter(getActivity(), new ArrayList<>(modelMap.values()));
             listOfApps.setAdapter(applicationListAdapter);
         } else {
             ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
@@ -109,21 +106,15 @@ public class ApplicationsInformationFragment extends Fragment {
 
     public List<UsageStats> getUsageStatistics(int intervalType) {
         // Get the app statistics since one year ago from the current time.
-        Calendar beginCal = Calendar.getInstance();
-        beginCal.set(Calendar.DATE, 1);
-        beginCal.set(Calendar.MONTH, 1);
-        beginCal.set(Calendar.YEAR, 2015);
+
 
         Calendar endCal = Calendar.getInstance();
-        endCal.set(Calendar.DATE, 25);
-        endCal.set(Calendar.MONTH, 5);
-        endCal.set(Calendar.YEAR, 2016);
+        endCal.add(Calendar.YEAR, -1);
         usageStatsManager = (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE);
-        List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(intervalType, beginCal.getTimeInMillis(), endCal.getTimeInMillis());
+        List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(intervalType, endCal.getTimeInMillis(), System.currentTimeMillis());
 
         if (queryUsageStats.size() == 0) {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-            Log.e("usage stats", "no usage");
         }
         return queryUsageStats;
     }

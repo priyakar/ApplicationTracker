@@ -7,7 +7,7 @@ public class AppsInstalledModel {
     PackageInfo packageInfo;
     long startTime, closeTime;
 
-    public AppsInstalledModel(PackageInfo info, long startTime, long closeTime) {
+    public AppsInstalledModel(PackageInfo info, long closeTime, long startTime) {
         this.startTime = startTime;
         this.closeTime = closeTime;
         this.packageInfo = info;

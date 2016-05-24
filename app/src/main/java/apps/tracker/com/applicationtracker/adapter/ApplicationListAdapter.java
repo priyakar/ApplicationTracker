@@ -11,9 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import apps.tracker.com.applicationtracker.R;
 import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
@@ -54,13 +52,12 @@ public class ApplicationListAdapter extends BaseAdapter {
             convertView = this.inflater.inflate(R.layout.applicaiton_details_item, parent, false);
             holder.applicationName = (TextView) convertView.findViewById(R.id.app_name);
             holder.lastOpened = (TextView) convertView.findViewById(R.id.last_opened_time);
+            convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if (holder != null) {
-            holder.applicationName.setText(packageInfo.get(position).getPackageInfo().applicationInfo.loadLabel(context.getPackageManager()).toString());
-            holder.lastOpened.setText(getTimeStamp(packageInfo.get(position).getCloseTime()));
-        }
+        holder.applicationName.setText(packageInfo.get(position).getPackageInfo().applicationInfo.loadLabel(context.getPackageManager()).toString());
+        holder.lastOpened.setText(getTimeStamp(packageInfo.get(position).getCloseTime()));
 
         return convertView;
     }
@@ -69,9 +66,9 @@ public class ApplicationListAdapter extends BaseAdapter {
         public TextView applicationName, lastOpened;
     }
 
-    private String getTimeStamp (long milliseconds) {
+    private String getTimeStamp(long milliseconds) {
         Date date = new Date(milliseconds);
-        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yy\nhh:mm:ss a");
         return formatter.format(date);
     }
 
