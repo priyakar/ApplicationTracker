@@ -1,24 +1,30 @@
 package apps.tracker.com.applicationtracker.adapter;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import apps.tracker.com.applicationtracker.R;
+import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
 
 public class ApplicationListAdapter extends BaseAdapter {
 
     Context context;
-    List<PackageInfo> packageInfo;
+    List<AppsInstalledModel> packageInfo;
     LayoutInflater inflater;
 
-    public ApplicationListAdapter(Context context, List<PackageInfo> packageInfo) {
+    public ApplicationListAdapter(Context context, ArrayList<AppsInstalledModel> packageInfo) {
         this.context = context;
         this.packageInfo = packageInfo;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -52,13 +58,22 @@ public class ApplicationListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         if (holder != null) {
-            holder.applicationName.setText(packageInfo.get(position).applicationInfo.loadLabel(context.getPackageManager()).toString());
-            holder.lastOpened.setText(String.valueOf(packageInfo.get(position).lastUpdateTime));
+            holder.applicationName.setText(packageInfo.get(position).getPackageInfo().applicationInfo.loadLabel(context.getPackageManager()).toString());
+            holder.lastOpened.setText(getTimeStamp(packageInfo.get(position).getCloseTime()));
         }
+
         return convertView;
     }
 
     public class ViewHolder {
         public TextView applicationName, lastOpened;
     }
+
+    private String getTimeStamp (long milliseconds) {
+        Date date = new Date(milliseconds);
+        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        return formatter.format(date);
+    }
+
+
 }

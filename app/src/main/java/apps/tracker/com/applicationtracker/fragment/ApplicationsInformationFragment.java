@@ -1,23 +1,33 @@
 package apps.tracker.com.applicationtracker.fragment;
 
 import android.app.ActivityManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.ArraySet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import apps.tracker.com.applicationtracker.R;
 import apps.tracker.com.applicationtracker.adapter.ApplicationListAdapter;
 import apps.tracker.com.applicationtracker.adapter.RunningApplicationListAdapter;
+import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -31,9 +41,13 @@ public class ApplicationsInformationFragment extends Fragment {
 
     protected int tabSelected;
     protected List<PackageInfo> listOfAllApps, listOfNonSystemApps;
+//    protected List<AppsInstalledModel> appsInstalledModel;
     protected List<ActivityManager.RunningAppProcessInfo> listOfRunningApps;
+    protected List<UsageStats> usageStats;
+    protected HashMap<String, AppsInstalledModel> modelMap;
     protected ApplicationListAdapter applicationListAdapter;
     protected RunningApplicationListAdapter runningApplicationListAdapter;
+    protected UsageStatsManager usageStatsManager;
 
     public ApplicationsInformationFragment() {
         // Required empty public constructor
@@ -62,13 +76,27 @@ public class ApplicationsInformationFragment extends Fragment {
         ButterKnife.bind(this, view);
         listOfAllApps = getActivity().getPackageManager().getInstalledPackages(0);
         listOfNonSystemApps = new ArrayList<>();
+        usageStats = new ArrayList<>();
+//        appsInstalledModel = new ArrayList<>();
+        modelMap = new HashMap<>();
         if (tabSelected == 0) {
             for (PackageInfo app : listOfAllApps) {
                 if ((app.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     listOfNonSystemApps.add(app);
                 }
             }
-            applicationListAdapter = new ApplicationListAdapter(getActivity(), listOfNonSystemApps);
+            usageStats = getUsageStatistics(UsageStatsManager.INTERVAL_MONTHLY);
+            for (PackageInfo nonSystemApp : listOfNonSystemApps) {
+                String appName = nonSystemApp.packageName;
+                    for (int i = 0; i < usageStats.size(); i++) {
+                        String statsAppName = usageStats.get(i).getPackageName();
+                        if (statsAppName.equals(appName) && !modelMap.containsKey(appName)) {
+                            modelMap.put(appName,new AppsInstalledModel(nonSystemApp, usageStats.get(i).getLastTimeUsed(), usageStats.get(i).getFirstTimeStamp()));
+                        }
+                }
+            }
+
+            applicationListAdapter = new ApplicationListAdapter(getActivity(), new ArrayList<AppsInstalledModel>(modelMap.values()));
             listOfApps.setAdapter(applicationListAdapter);
         } else {
             ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
@@ -77,5 +105,26 @@ public class ApplicationsInformationFragment extends Fragment {
             listOfApps.setAdapter(runningApplicationListAdapter);
         }
         return view;
+    }
+
+    public List<UsageStats> getUsageStatistics(int intervalType) {
+        // Get the app statistics since one year ago from the current time.
+        Calendar beginCal = Calendar.getInstance();
+        beginCal.set(Calendar.DATE, 1);
+        beginCal.set(Calendar.MONTH, 1);
+        beginCal.set(Calendar.YEAR, 2015);
+
+        Calendar endCal = Calendar.getInstance();
+        endCal.set(Calendar.DATE, 25);
+        endCal.set(Calendar.MONTH, 5);
+        endCal.set(Calendar.YEAR, 2016);
+        usageStatsManager = (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE);
+        List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(intervalType, beginCal.getTimeInMillis(), endCal.getTimeInMillis());
+
+        if (queryUsageStats.size() == 0) {
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            Log.e("usage stats", "no usage");
+        }
+        return queryUsageStats;
     }
 }
