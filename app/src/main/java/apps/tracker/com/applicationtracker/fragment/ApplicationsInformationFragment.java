@@ -111,10 +111,15 @@ public class ApplicationsInformationFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getAppsInfo();
+
         listOfApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getChildFragmentManager().beginTransaction().add(ApplicationDetailsFragment.newInstance(appsInstalledModel.get(position)), null).commit();
+                if (tabSelected == 0) {
+                    ApplicationDetailsFragment fragment = ApplicationDetailsFragment.newInstance();
+                    fragment.setPackageInfo(appsInstalledModel.get(position));
+                    getChildFragmentManager().beginTransaction().add(fragment, null).commit();
+                }
             }
         });
     }

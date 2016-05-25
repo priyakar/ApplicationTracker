@@ -29,25 +29,13 @@ public class ApplicationDetailsFragment extends DialogFragment {
     @Bind(R.id.app_name)
     TextView appName;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-
     AppsInstalledModel packageInfo;
 
-    public static ApplicationDetailsFragment newInstance(AppsInstalledModel param1) {
+    public static ApplicationDetailsFragment newInstance() {
         ApplicationDetailsFragment fragment = new ApplicationDetailsFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            packageInfo = (AppsInstalledModel) getArguments().getSerializable(ARG_PARAM1);
-        }
     }
 
     @Override
@@ -62,17 +50,21 @@ public class ApplicationDetailsFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (getArguments() != null) {
             packageInfo = (AppsInstalledModel) getArguments().getSerializable(ARG_PARAM1);
             initializeTextfields();
-        }
+    }
+
+    public void setPackageInfo(AppsInstalledModel model) {
+        packageInfo = model;
     }
 
     private void initializeTextfields() {
-        appName.setText(packageInfo.getPackageInfo().applicationInfo.loadLabel(getActivity().getPackageManager()));
-        bytesSent.setText(String.valueOf(TrafficStats.getUidTxBytes(packageInfo.getPackageInfo().applicationInfo.uid)));
-        bytesReceived.setText(String.valueOf(TrafficStats.getUidRxBytes(packageInfo.getPackageInfo().applicationInfo.uid)));
-        openTime.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.getStartTime())));
-        closeTime.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.getCloseTime())));
+        if (packageInfo != null) {
+            appName.setText(packageInfo.getPackageInfo().applicationInfo.loadLabel(getActivity().getPackageManager()));
+            bytesSent.setText(String.valueOf(TrafficStats.getUidTxBytes(packageInfo.getPackageInfo().applicationInfo.uid)));
+            bytesReceived.setText(String.valueOf(TrafficStats.getUidRxBytes(packageInfo.getPackageInfo().applicationInfo.uid)));
+            openTime.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.getStartTime())));
+            closeTime.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.getCloseTime())));
+        }
     }
 }
