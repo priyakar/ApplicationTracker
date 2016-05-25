@@ -93,7 +93,7 @@ public class ApplicationsInformationFragment extends Fragment {
                     String statsAppName = usageStats.get(i).getPackageName();
                     if (statsAppName.equals(appName) && !modelMap.containsKey(appName)) {
                         modelMap.put(appName, new AppsInstalledModel(nonSystemApp, usageStats.get(i).getFirstTimeStamp(),
-                                usageStats.get(i).getLastTimeUsed()));
+                                usageStats.get(i).getLastTimeStamp()));
                     }
                 }
             }
