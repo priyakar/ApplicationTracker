@@ -92,7 +92,8 @@ public class ApplicationsInformationFragment extends Fragment {
                 for (int i = 0; i < usageStats.size(); i++) {
                     String statsAppName = usageStats.get(i).getPackageName();
                     if (statsAppName.equals(appName) && !modelMap.containsKey(appName)) {
-                        modelMap.put(appName, new AppsInstalledModel(nonSystemApp, usageStats.get(i).getFirstTimeStamp(), usageStats.get(i).getLastTimeUsed()));
+                        modelMap.put(appName, new AppsInstalledModel(nonSystemApp, usageStats.get(i).getFirstTimeStamp(),
+                                usageStats.get(i).getLastTimeUsed()));
                     }
                 }
             }
@@ -125,9 +126,6 @@ public class ApplicationsInformationFragment extends Fragment {
     }
 
     public List<UsageStats> getUsageStatistics(int intervalType) {
-        // Get the app statistics since one year ago from the current time.
-
-
         Calendar endCal = Calendar.getInstance();
         endCal.add(Calendar.YEAR, -1);
         usageStatsManager = (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE);

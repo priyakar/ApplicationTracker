@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="@color/grey"
+            android:text="N/A until Lollipop"
             android:textSize="11sp"
             tools:text="4:26" />
     </LinearLayout>

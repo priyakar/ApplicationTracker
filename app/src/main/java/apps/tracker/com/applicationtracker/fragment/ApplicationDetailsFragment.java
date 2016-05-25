@@ -50,7 +50,6 @@ public class ApplicationDetailsFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-            packageInfo = (AppsInstalledModel) getArguments().getSerializable(ARG_PARAM1);
             initializeTextfields();
     }
 
