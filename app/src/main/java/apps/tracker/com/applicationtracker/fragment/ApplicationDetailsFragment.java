@@ -1,5 +1,7 @@
 package apps.tracker.com.applicationtracker.fragment;
 
+import android.app.usage.NetworkStats;
+import android.net.TrafficStats;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import apps.tracker.com.applicationtracker.R;
+import apps.tracker.com.applicationtracker.TimeFormatUtils;
 import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -20,6 +23,10 @@ public class ApplicationDetailsFragment extends DialogFragment {
     TextView bytesSent;
     @Bind(R.id.bytes_received)
     TextView bytesReceived;
+    @Bind(R.id.open_time)
+    TextView openTime;
+    @Bind(R.id.close_time)
+    TextView closeTime;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -54,8 +61,10 @@ public class ApplicationDetailsFragment extends DialogFragment {
         super.onResume();
         if (getArguments() != null) {
             packageInfo = (AppsInstalledModel) getArguments().getSerializable(ARG_PARAM1);
-            bytesSent.setText("" + packageInfo.getStartTime());
-            bytesReceived.setText("" + packageInfo.getStartTime());
+            bytesSent.setText(String.valueOf(TrafficStats.getUidTxBytes(packageInfo.getPackageInfo().applicationInfo.uid)));
+            bytesReceived.setText(String.valueOf(TrafficStats.getUidRxBytes(packageInfo.getPackageInfo().applicationInfo.uid)));
+            openTime.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.getStartTime())));
+            closeTime.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.getCloseTime())));
         }
     }
 }

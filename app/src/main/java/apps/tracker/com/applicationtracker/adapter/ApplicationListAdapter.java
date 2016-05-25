@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import apps.tracker.com.applicationtracker.R;
+import apps.tracker.com.applicationtracker.TimeFormatUtils;
 import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
 
 public class ApplicationListAdapter extends BaseAdapter {
@@ -57,7 +58,7 @@ public class ApplicationListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.applicationName.setText(packageInfo.get(position).getPackageInfo().applicationInfo.loadLabel(context.getPackageManager()).toString());
-        holder.lastOpened.setText(getTimeStamp(packageInfo.get(position).getCloseTime()));
+        holder.lastOpened.setText(TimeFormatUtils.getTimeStamp(packageInfo.get(position).getCloseTime()));
 
         return convertView;
     }
@@ -65,12 +66,4 @@ public class ApplicationListAdapter extends BaseAdapter {
     public class ViewHolder {
         public TextView applicationName, lastOpened;
     }
-
-    private String getTimeStamp(long milliseconds) {
-        Date date = new Date(milliseconds);
-        DateFormat formatter = new SimpleDateFormat("MM/dd/yy\nhh:mm:ss a");
-        return formatter.format(date);
-    }
-
-
 }

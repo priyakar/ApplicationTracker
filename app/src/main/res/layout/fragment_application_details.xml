@@ -1,39 +1,61 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:paddingEnd="30dp"
+    android:paddingStart="30dp"
+    android:paddingBottom="30dp"
     tools:context="apps.tracker.com.applicationtracker.fragment.ApplicationDetailsFragment">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total Bytes Sent"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
+        style="@style/Title"
+        android:text="App Opened Time" />
+
+    <TextView
+        android:id="@+id/open_time"
+        style="@style/Content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"/>
+
+    <TextView
+        style="@style/Title"
+        android:text="App Close Time" />
+
+    <TextView
+        android:id="@+id/close_time"
+        style="@style/Content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"/>
+
+    <TextView
+        style="@style/Title"
+        android:text="Total Bytes Sent" />
 
     <TextView
         android:id="@+id/bytes_sent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="30dp"
-        android:textColor="@color/grey"
-        android:textSize="12sp" />
+        style="@style/Content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"/>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total Bytes Received"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
+        style="@style/Title"
+        android:text="Total Bytes Received" />
 
     <TextView
         android:id="@+id/bytes_received"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/grey"
-        android:padding="30dp"
-        android:textSize="12sp" />
+        style="@style/Content" />
+
+
 
 </LinearLayout>
