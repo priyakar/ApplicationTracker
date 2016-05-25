@@ -4,6 +4,7 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,23 +53,27 @@ public class RunningApplicationListAdapter extends BaseAdapter {
             convertView = this.inflater.inflate(R.layout.applicaiton_details_item, parent, false);
             holder.applicationName = (TextView) convertView.findViewById(R.id.app_name);
             holder.lastOpened = (TextView) convertView.findViewById(R.id.last_opened_time);
+            convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if (holder != null) {
-            try {
-                holder.applicationName.setText(getApplicationName(position));
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            holder.lastOpened.setText(String.valueOf(packageInfo.get(position).uid));
+
+        try {
+            holder.applicationName.setText(getApplicationName(position));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
+        holder.lastOpened.setText(String.valueOf(packageInfo.get(position).uid));
         return convertView;
     }
 
     @NonNull
     private String getApplicationName(int position) throws PackageManager.NameNotFoundException {
-        return packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageInfo.get(position).processName, PackageManager.GET_META_DATA)).toString();
+        String str = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageInfo.get(position).processName, PackageManager.GET_META_DATA)).toString();
+        if (TextUtils.isEmpty(str)) {
+            str = packageInfo.get(position).processName;
+        }
+        return str;
     }
 
     public class ViewHolder {

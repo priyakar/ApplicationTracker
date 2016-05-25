@@ -2,12 +2,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:paddingBottom="30dp"
     android:paddingEnd="30dp"
     android:paddingStart="30dp"
-    android:paddingBottom="30dp"
     tools:context="apps.tracker.com.applicationtracker.fragment.ApplicationDetailsFragment">
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="30sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:layout_marginBottom="20dp"/>
 
     <TextView
         style="@style/Title"
@@ -20,7 +35,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider"/>
+        android:background="@color/divider" />
 
     <TextView
         style="@style/Title"
@@ -33,7 +48,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider"/>
+        android:background="@color/divider" />
 
     <TextView
         style="@style/Title"
@@ -46,7 +61,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider"/>
+        android:background="@color/divider" />
 
     <TextView
         style="@style/Title"
@@ -55,7 +70,6 @@
     <TextView
         android:id="@+id/bytes_received"
         style="@style/Content" />
-
 
 
 </LinearLayout>
