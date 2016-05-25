@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class ApplicationsInformationFragment extends Fragment {
 
     protected int tabSelected;
     protected List<PackageInfo> listOfAllApps, listOfNonSystemApps;
-    //    protected List<AppsInstalledModel> appsInstalledModel;
+    protected ArrayList<AppsInstalledModel> appsInstalledModel;
     protected List<ActivityManager.RunningAppProcessInfo> listOfRunningApps;
     protected List<UsageStats> usageStats;
     protected HashMap<String, AppsInstalledModel> modelMap;
@@ -71,10 +72,13 @@ public class ApplicationsInformationFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_applications_information, container, false);
         ButterKnife.bind(this, view);
+        return view;
+    }
+
+    private void getAppsInfo() {
         listOfAllApps = getActivity().getPackageManager().getInstalledPackages(0);
         listOfNonSystemApps = new ArrayList<>();
         usageStats = new ArrayList<>();
-//        appsInstalledModel = new ArrayList<>();
         modelMap = new HashMap<>();
         if (tabSelected == 0) {
             for (PackageInfo app : listOfAllApps) {
@@ -92,8 +96,8 @@ public class ApplicationsInformationFragment extends Fragment {
                     }
                 }
             }
-
-            applicationListAdapter = new ApplicationListAdapter(getActivity(), new ArrayList<>(modelMap.values()));
+            appsInstalledModel = new ArrayList<>(modelMap.values());
+            applicationListAdapter = new ApplicationListAdapter(getActivity(), appsInstalledModel);
             listOfApps.setAdapter(applicationListAdapter);
         } else {
             ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
@@ -101,7 +105,18 @@ public class ApplicationsInformationFragment extends Fragment {
             runningApplicationListAdapter = new RunningApplicationListAdapter(getActivity(), listOfRunningApps);
             listOfApps.setAdapter(runningApplicationListAdapter);
         }
-        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAppsInfo();
+        listOfApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                getChildFragmentManager().beginTransaction().add(ApplicationDetailsFragment.newInstance(appsInstalledModel.get(position)), null).commit();
+            }
+        });
     }
 
     public List<UsageStats> getUsageStatistics(int intervalType) {

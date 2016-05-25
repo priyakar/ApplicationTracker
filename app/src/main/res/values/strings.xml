@@ -5,4 +5,7 @@
     <string name="apps_installed">Installed Applications</string>
     <string name="apps_running">Running Applications</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
