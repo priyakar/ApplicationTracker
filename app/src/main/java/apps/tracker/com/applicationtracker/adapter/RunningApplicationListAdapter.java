@@ -1,10 +1,8 @@
 package apps.tracker.com.applicationtracker.adapter;
 
-import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +12,16 @@ import android.widget.TextView;
 import java.util.List;
 
 import apps.tracker.com.applicationtracker.R;
+import apps.tracker.com.applicationtracker.utils.TimeFormatUtils;
 
 public class RunningApplicationListAdapter extends BaseAdapter {
 
     Context context;
-    List<RunningAppProcessInfo> packageInfo;
+    List<UsageEvents.Event> packageInfo;
     LayoutInflater inflater;
     PackageManager packageManager;
 
-    public RunningApplicationListAdapter(Context context, List<RunningAppProcessInfo> packageInfo) {
+    public RunningApplicationListAdapter(Context context, List<UsageEvents.Event> packageInfo) {
         this.context = context;
         this.packageInfo = packageInfo;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -58,22 +57,9 @@ public class RunningApplicationListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        try {
-            holder.applicationName.setText(getApplicationName(position));
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        holder.lastOpened.setText(String.valueOf(packageInfo.get(position).uid));
+        holder.applicationName.setText(packageInfo.get(position).getPackageName());
+        holder.lastOpened.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.get(position).getTimeStamp())));
         return convertView;
-    }
-
-    @NonNull
-    private String getApplicationName(int position) throws PackageManager.NameNotFoundException {
-        String str = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageInfo.get(position).processName, PackageManager.GET_META_DATA)).toString();
-        if (TextUtils.isEmpty(str)) {
-            str = packageInfo.get(position).processName;
-        }
-        return str;
     }
 
     public class ViewHolder {
