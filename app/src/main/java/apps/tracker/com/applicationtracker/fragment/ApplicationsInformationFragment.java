@@ -87,8 +87,9 @@ public class ApplicationsInformationFragment extends Fragment {
         for (ApplicationInfo nonSystemApp : listOfNonSystemApps) {
             String appName = nonSystemApp.packageName;
             for (int i = 0; i < usageStats.size(); i++) {
-                modelMap.put(appName, new AppsInstalledModel(nonSystemApp,
-                        usageStats.get(i).getLastTimeUsed(), usageStats.get(i).getFirstTimeStamp()));
+                if (appName.equals(usageStats.get(i).getPackageName()) && !modelMap.containsKey(appName))
+                    modelMap.put(appName, new AppsInstalledModel(nonSystemApp,
+                            usageStats.get(i).getLastTimeUsed(), usageStats.get(i).getFirstTimeStamp()));
             }
         }
 
@@ -122,7 +123,7 @@ public class ApplicationsInformationFragment extends Fragment {
 
         if (queryUsageStats.size() == 0) {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-            Toast.makeText(getActivity(), "Grant permissions to get Application data from the google play store", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Grant permissions to Application Tracker to get usage data", Toast.LENGTH_LONG).show();
         }
         return queryUsageStats;
     }
