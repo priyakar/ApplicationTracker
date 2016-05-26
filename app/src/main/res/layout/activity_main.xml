@@ -1,8 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/network_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:letterSpacing="0.07"
+            android:text="Device Network usage"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_sent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/network_title"
+            android:layout_margin="10dp"
+            android:text="Bytes Sent"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/bytes_sent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/text_sent"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/network_title"
+            android:text="20"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:textColor="@color/grey"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/text_received"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/text_sent"
+            android:padding="10dp"
+            android:text="Bytes Received"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/bytes_received"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/text_received"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/bytes_sent"
+            android:text="22"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:textColor="@color/grey"
+            android:textSize="12sp" />
+    </RelativeLayout>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
@@ -11,8 +78,8 @@
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary"
         android:elevation="6dp"
-        app:tabIndicatorColor="@color/black"
-        android:minHeight="?actionBarSize" />
+        android:minHeight="?actionBarSize"
+        app:tabIndicatorColor="@color/black" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
@@ -21,4 +88,4 @@
         android:layout_below="@+id/tabs" />
 
 
-</RelativeLayout>
+</LinearLayout>

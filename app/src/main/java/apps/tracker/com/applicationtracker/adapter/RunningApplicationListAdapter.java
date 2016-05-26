@@ -1,6 +1,7 @@
 package apps.tracker.com.applicationtracker.adapter;
 
 import android.app.usage.UsageEvents;
+import android.app.usage.UsageStats;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
@@ -17,11 +18,11 @@ import apps.tracker.com.applicationtracker.utils.TimeFormatUtils;
 public class RunningApplicationListAdapter extends BaseAdapter {
 
     Context context;
-    List<UsageEvents.Event> packageInfo;
+    List<UsageStats> packageInfo;
     LayoutInflater inflater;
     PackageManager packageManager;
 
-    public RunningApplicationListAdapter(Context context, List<UsageEvents.Event> packageInfo) {
+    public RunningApplicationListAdapter(Context context, List<UsageStats> packageInfo) {
         this.context = context;
         this.packageInfo = packageInfo;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -58,7 +59,7 @@ public class RunningApplicationListAdapter extends BaseAdapter {
         }
 
         holder.applicationName.setText(packageInfo.get(position).getPackageName());
-        holder.lastOpened.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.get(position).getTimeStamp())));
+        holder.lastOpened.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.get(position).getLastTimeStamp())));
         return convertView;
     }
 

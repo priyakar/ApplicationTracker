@@ -1,7 +1,6 @@
 package apps.tracker.com.applicationtracker.fragment;
 
-import android.app.ActivityManager;
-import android.app.usage.UsageEvents;
+import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import java.util.List;
 
 import apps.tracker.com.applicationtracker.R;
 import apps.tracker.com.applicationtracker.adapter.RunningApplicationListAdapter;
-import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -34,9 +32,9 @@ public class RunningApplicationsFragment extends Fragment {
     ListView listOfApps;
 
     protected int tabSelected;
-    protected List<UsageEvents.Event> listOfRunningApps;
+    protected List<UsageStats> listOfRunningApps, refinedList;
     protected RunningApplicationListAdapter runningApplicationListAdapter;
-    protected HashMap<String, UsageEvents.Event> modelMap;
+    protected HashMap<String, UsageStats> modelMap;
 
     public RunningApplicationsFragment() {
         // Required empty public constructor
@@ -67,26 +65,18 @@ public class RunningApplicationsFragment extends Fragment {
     }
 
     public void getAppsInfo() {
-//        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-//        listOfRunningApps = manager.getRunningAppProcesses();
         modelMap = new HashMap<>();
-        Calendar endCal = Calendar.getInstance();
-        endCal.add(Calendar.YEAR, -1);
         UsageStatsManager manager = (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE);
-        UsageEvents events = manager.queryEvents(endCal.getTimeInMillis(), System.currentTimeMillis());
-        if (events == null) {
-            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-            Toast.makeText(getActivity(), "Grant permissions to get Application data from the google play store", Toast.LENGTH_LONG).show();
-        }
-        while (events.hasNextEvent()) {
-            UsageEvents.Event event = new UsageEvents.Event();
-            events.getNextEvent(event);
-            if (!modelMap.containsKey(event.getPackageName())) {
-                modelMap.put(event.getPackageName(), event);
+        listOfRunningApps = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, System.currentTimeMillis() - 10000, System.currentTimeMillis());
+
+        for (UsageStats usageStats : listOfRunningApps) {
+            if (!modelMap.containsKey(usageStats.getPackageName())) {
+                modelMap.put(usageStats.getPackageName(), usageStats);
             }
         }
-        listOfRunningApps = new ArrayList<>(modelMap.values());
-        runningApplicationListAdapter = new RunningApplicationListAdapter(getActivity(), listOfRunningApps);
+
+        refinedList = new ArrayList<>(modelMap.values());
+        runningApplicationListAdapter = new RunningApplicationListAdapter(getActivity(), refinedList);
         listOfApps.setAdapter(runningApplicationListAdapter);
 
     }

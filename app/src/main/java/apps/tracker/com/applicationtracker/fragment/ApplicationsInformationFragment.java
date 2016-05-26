@@ -88,7 +88,7 @@ public class ApplicationsInformationFragment extends Fragment {
             String appName = nonSystemApp.packageName;
             for (int i = 0; i < usageStats.size(); i++) {
                 modelMap.put(appName, new AppsInstalledModel(nonSystemApp,
-                        usageStats.get(i).getLastTimeStamp(), usageStats.get(i).getFirstTimeStamp()));
+                        usageStats.get(i).getLastTimeUsed(), usageStats.get(i).getFirstTimeStamp()));
             }
         }
 
