@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import apps.tracker.com.applicationtracker.R;
-import apps.tracker.com.applicationtracker.TimeFormatUtils;
+import apps.tracker.com.applicationtracker.utils.TimeFormatUtils;
 import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,9 +59,9 @@ public class ApplicationDetailsFragment extends DialogFragment {
 
     private void initializeTextfields() {
         if (packageInfo != null) {
-            appName.setText(packageInfo.getPackageInfo().applicationInfo.loadLabel(getActivity().getPackageManager()));
-            bytesSent.setText(String.valueOf(TrafficStats.getUidTxBytes(packageInfo.getPackageInfo().applicationInfo.uid)));
-            bytesReceived.setText(String.valueOf(TrafficStats.getUidRxBytes(packageInfo.getPackageInfo().applicationInfo.uid)));
+            appName.setText(packageInfo.getPackageInfo().loadLabel(getActivity().getPackageManager()));
+            bytesSent.setText(String.valueOf(TrafficStats.getUidTxBytes(packageInfo.getPackageInfo().uid)));
+            bytesReceived.setText(String.valueOf(TrafficStats.getUidRxBytes(packageInfo.getPackageInfo().uid)));
             openTime.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.getStartTime())));
             closeTime.setText(String.valueOf(TimeFormatUtils.getTimeStamp(packageInfo.getCloseTime())));
         }

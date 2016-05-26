@@ -1,15 +1,16 @@
 package apps.tracker.com.applicationtracker.model;
 
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 
 import java.io.Serializable;
 
 public class AppsInstalledModel implements Serializable {
 
-    PackageInfo packageInfo;
+    ApplicationInfo packageInfo;
     long startTime, closeTime;
 
-    public AppsInstalledModel(PackageInfo info, long closeTime, long startTime) {
+    public AppsInstalledModel(ApplicationInfo info, long closeTime, long startTime) {
         this.startTime = startTime;
         this.closeTime = closeTime;
         this.packageInfo = info;
@@ -23,11 +24,11 @@ public class AppsInstalledModel implements Serializable {
         return closeTime;
     }
 
-    public PackageInfo getPackageInfo() {
+    public ApplicationInfo getPackageInfo() {
         return packageInfo;
     }
 
-    public void setPackageInfo(PackageInfo packageInfo) {
+    public void setPackageInfo(ApplicationInfo packageInfo) {
         this.packageInfo = packageInfo;
     }
 

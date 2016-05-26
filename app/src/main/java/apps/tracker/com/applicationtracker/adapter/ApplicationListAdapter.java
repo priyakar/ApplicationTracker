@@ -7,14 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import apps.tracker.com.applicationtracker.R;
-import apps.tracker.com.applicationtracker.TimeFormatUtils;
+import apps.tracker.com.applicationtracker.utils.TimeFormatUtils;
 import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
 
 public class ApplicationListAdapter extends BaseAdapter {
@@ -57,7 +54,7 @@ public class ApplicationListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.applicationName.setText(packageInfo.get(position).getPackageInfo().applicationInfo.loadLabel(context.getPackageManager()).toString());
+        holder.applicationName.setText(packageInfo.get(position).getPackageInfo().loadLabel(context.getPackageManager()).toString());
         holder.lastOpened.setText(TimeFormatUtils.getTimeStamp(packageInfo.get(position).getCloseTime()));
 
         return convertView;

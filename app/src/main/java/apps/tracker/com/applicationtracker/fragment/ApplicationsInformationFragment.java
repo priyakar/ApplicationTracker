@@ -1,12 +1,11 @@
 package apps.tracker.com.applicationtracker.fragment;
 
-import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -16,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,7 +24,6 @@ import java.util.List;
 
 import apps.tracker.com.applicationtracker.R;
 import apps.tracker.com.applicationtracker.adapter.ApplicationListAdapter;
-import apps.tracker.com.applicationtracker.adapter.RunningApplicationListAdapter;
 import apps.tracker.com.applicationtracker.model.AppsInstalledModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,13 +37,11 @@ public class ApplicationsInformationFragment extends Fragment {
     ListView listOfApps;
 
     protected int tabSelected;
-    protected List<PackageInfo> listOfAllApps, listOfNonSystemApps;
+    protected List<ApplicationInfo> listOfAllApps, listOfNonSystemApps;
     protected ArrayList<AppsInstalledModel> appsInstalledModel;
-    protected List<ActivityManager.RunningAppProcessInfo> listOfRunningApps;
     protected List<UsageStats> usageStats;
     protected HashMap<String, AppsInstalledModel> modelMap;
     protected ApplicationListAdapter applicationListAdapter;
-    protected RunningApplicationListAdapter runningApplicationListAdapter;
     protected UsageStatsManager usageStatsManager;
 
     public ApplicationsInformationFragment() {
@@ -75,37 +72,29 @@ public class ApplicationsInformationFragment extends Fragment {
         return view;
     }
 
-    private void getAppsInfo() {
-        listOfAllApps = getActivity().getPackageManager().getInstalledPackages(0);
+    public void getAppsInfo() {
         listOfNonSystemApps = new ArrayList<>();
         usageStats = new ArrayList<>();
         modelMap = new HashMap<>();
-        if (tabSelected == 0) {
-            for (PackageInfo app : listOfAllApps) {
-                if ((app.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                    listOfNonSystemApps.add(app);
-                }
+        PackageManager packageManager = getActivity().getPackageManager();
+        listOfAllApps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+        for (ApplicationInfo app : listOfAllApps) {
+            if ((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                listOfNonSystemApps.add(app);
             }
-            usageStats = getUsageStatistics(UsageStatsManager.INTERVAL_YEARLY);
-            for (PackageInfo nonSystemApp : listOfNonSystemApps) {
-                String appName = nonSystemApp.packageName;
-                for (int i = 0; i < usageStats.size(); i++) {
-                    String statsAppName = usageStats.get(i).getPackageName();
-                    if (statsAppName.equals(appName) && !modelMap.containsKey(appName)) {
-                        modelMap.put(appName, new AppsInstalledModel(nonSystemApp, usageStats.get(i).getFirstTimeStamp(),
-                                usageStats.get(i).getLastTimeStamp()));
-                    }
-                }
-            }
-            appsInstalledModel = new ArrayList<>(modelMap.values());
-            applicationListAdapter = new ApplicationListAdapter(getActivity(), appsInstalledModel);
-            listOfApps.setAdapter(applicationListAdapter);
-        } else {
-            ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-            listOfRunningApps = manager.getRunningAppProcesses();
-            runningApplicationListAdapter = new RunningApplicationListAdapter(getActivity(), listOfRunningApps);
-            listOfApps.setAdapter(runningApplicationListAdapter);
         }
+        usageStats = getUsageStatistics(UsageStatsManager.INTERVAL_BEST);
+        for (ApplicationInfo nonSystemApp : listOfNonSystemApps) {
+            String appName = nonSystemApp.packageName;
+            for (int i = 0; i < usageStats.size(); i++) {
+                modelMap.put(appName, new AppsInstalledModel(nonSystemApp,
+                        usageStats.get(i).getLastTimeStamp(), usageStats.get(i).getFirstTimeStamp()));
+            }
+        }
+
+        appsInstalledModel = new ArrayList<>(modelMap.values());
+        applicationListAdapter = new ApplicationListAdapter(getActivity(), appsInstalledModel);
+        listOfApps.setAdapter(applicationListAdapter);
     }
 
     @Override
@@ -133,6 +122,7 @@ public class ApplicationsInformationFragment extends Fragment {
 
         if (queryUsageStats.size() == 0) {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            Toast.makeText(getActivity(), "Grant permissions to get Application data from the google play store", Toast.LENGTH_LONG).show();
         }
         return queryUsageStats;
     }

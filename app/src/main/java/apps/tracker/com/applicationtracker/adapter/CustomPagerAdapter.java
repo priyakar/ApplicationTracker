@@ -7,12 +7,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import apps.tracker.com.applicationtracker.R;
 import apps.tracker.com.applicationtracker.fragment.ApplicationsInformationFragment;
+import apps.tracker.com.applicationtracker.fragment.RunningApplicationsFragment;
 
 public class CustomPagerAdapter extends FragmentPagerAdapter {
     public static final int NUM_TABS = 2;
 
     Context context;
-    ApplicationsInformationFragment fragment;
+    ApplicationsInformationFragment informationFragment;
+    RunningApplicationsFragment runningApplicationFragment;
 
     public CustomPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
@@ -21,10 +23,19 @@ public class CustomPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (fragment == null) {
-            return ApplicationsInformationFragment.newInstance(position);
+        switch (position) {
+            case 0:
+                if (informationFragment == null) {
+                    informationFragment = ApplicationsInformationFragment.newInstance(position);
+                }
+                return informationFragment;
+            case 1:
+                if (runningApplicationFragment == null) {
+                    runningApplicationFragment = RunningApplicationsFragment.newInstance(position);
+                }
+                return runningApplicationFragment;
         }
-        return fragment;
+        return null;
     }
 
     @Override
@@ -39,5 +50,13 @@ public class CustomPagerAdapter extends FragmentPagerAdapter {
         } else {
             return context.getString(R.string.apps_running);
         }
+    }
+
+    public ApplicationsInformationFragment getInformationFragment() {
+        return informationFragment;
+    }
+
+    public RunningApplicationsFragment getRunningApplicationFragment() {
+        return runningApplicationFragment;
     }
 }
